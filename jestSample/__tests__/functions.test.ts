@@ -14,10 +14,14 @@ describe("sumOfArray", (): void => {
         expect(sumOfArray([-1, 1])).toBe(0);
     });
 
-    test('空のArrayはErrorになる', () => {
-        expect(() => {
-            sumOfArray([]);
-        }).toThrow(TypeError);
+    // test('空のArrayはErrorになる', () => {
+    //     expect(() => {
+    //         sumOfArray([]);
+    //     }).toThrow(TypeError);
+    // });
+
+    test('空のArrayは0になる', () => {
+        expect(sumOfArray([])).toBe(0);
     });
 
     test('1はそのまま1', () => {
@@ -45,7 +49,7 @@ describe("asyncSumOfArray", (): void => {
 
     test('空のArrayはErrorになる', () => {
         asyncSumOfArray([]).then(data => {
-            expect(data).toThrow(TypeError);
+            expect(data).toBe(0);
         });
     });
 });
@@ -68,7 +72,7 @@ describe("asyncSumOfArraySometimesZero", (): void => {
 
     test('空のArrayは0が帰ってくる', () => {
         const database = new DatabaseMock();
-        asyncSumOfArraySometimesZero([-1, 1], database).then(data => {
+        asyncSumOfArraySometimesZero([], database).then(data => {
             expect(data).toBe(0);
         });
     });
