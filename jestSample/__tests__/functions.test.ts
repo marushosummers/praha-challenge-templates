@@ -1,6 +1,8 @@
 // todo: ここに単体テストを書いてみましょう！
 
-import { sumOfArray, asyncSumOfArray } from "./../functions";
+import { sumOfArray, asyncSumOfArray, asyncSumOfArraySometimesZero, getFirstNameThrowIfLong} from "./../functions";
+import { DatabaseMock } from "./../util";
+
 
 describe("sumOfArray", (): void => {
 
@@ -45,7 +47,56 @@ describe("asyncSumOfArray", (): void => {
         asyncSumOfArray([]).then(data => {
             expect(data).toThrow(TypeError);
         });
+    });
+});
+
+describe("asyncSumOfArraySometimesZero", (): void => {
+
+    test('1+2が3になる', () => {
+        const database = new DatabaseMock();
+        asyncSumOfArraySometimesZero([1, 2], database).then(data => {
+            expect(data).toBe(3);
         });
+    });
 
+    test('-1+1が0になる', () => {
+        const database = new DatabaseMock();
+        asyncSumOfArraySometimesZero([-1, 1], database).then(data => {
+            expect(data).toBe(0);
+        });
+    });
 
+    test('空のArrayは0が帰ってくる', () => {
+        const database = new DatabaseMock();
+        asyncSumOfArraySometimesZero([-1, 1], database).then(data => {
+            expect(data).toBe(0);
+        });
+    });
+});
+
+describe("getFirstNameThrowIfLong", (): void => {
+
+    test('maxNameLengthを超えてないのでfirstNameが返ってくる', () => {
+        const nameApiSerivce = jest.fn().mockImplementation(() => {
+        return {
+            MAX_LENGTH: 4,
+            getFirstName: () => 'taro',
+        };
+        });
+        getFirstNameThrowIfLong(4, nameApiSerivce()).then(data => {
+            expect(data).toBe('taro');
+        });
+    });
+
+    test('maxNameLengthを超えているのでエラーが出る', () => {
+        const nameApiSerivce = jest.fn().mockImplementation(() => {
+        return {
+            MAX_LENGTH: 4,
+            getFirstName: () => 'longName',
+        };
+        });
+        getFirstNameThrowIfLong(4, nameApiSerivce()).then(data => {
+            expect(data).toThrow(TypeError);
+        });
+    });
 });
